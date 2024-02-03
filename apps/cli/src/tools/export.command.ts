@@ -1,4 +1,4 @@
-import * as program from "commander";
+import { OptionValues } from "commander";
 import * as inquirer from "inquirer";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -22,7 +22,7 @@ export class ExportCommand {
     private eventCollectionService: EventCollectionService,
   ) {}
 
-  async run(options: program.OptionValues): Promise<Response> {
+  async run(options: OptionValues): Promise<Response> {
     if (
       options.organizationid == null &&
       (await this.policyService.policyAppliesToUser(PolicyType.DisablePersonalVaultExport))
@@ -70,6 +70,8 @@ export class ExportCommand {
       const eventType = options.organizationid
         ? EventType.Organization_ClientExportedVault
         : EventType.User_ClientExportedVault;
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.eventCollectionService.collect(eventType, null, true, options.organizationid);
     } catch (e) {
       return Response.error(e);
@@ -79,7 +81,7 @@ export class ExportCommand {
 
   private async saveFile(
     exportContent: string,
-    options: program.OptionValues,
+    options: OptionValues,
     format: ExportFormat,
   ): Promise<Response> {
     try {

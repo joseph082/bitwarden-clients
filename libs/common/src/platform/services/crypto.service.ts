@@ -181,11 +181,19 @@ export class CryptoService implements CryptoServiceAbstraction {
 
   async clearStoredUserKey(keySuffix: KeySuffixOptions, userId?: UserId): Promise<void> {
     if (keySuffix === KeySuffixOptions.Auto) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.stateService.setUserKeyAutoUnlock(null, { userId: userId });
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.clearDeprecatedKeys(KeySuffixOptions.Auto, userId);
     }
     if (keySuffix === KeySuffixOptions.Pin) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.stateService.setPinKeyEncryptedUserKeyEphemeral(null, { userId: userId });
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.clearDeprecatedKeys(KeySuffixOptions.Pin, userId);
     }
   }
@@ -351,6 +359,8 @@ export class CryptoService implements CryptoServiceAbstraction {
     orgs: ProfileOrganizationResponse[] = [],
     providerOrgs: ProfileProviderOrganizationResponse[] = [],
   ): Promise<void> {
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.activeUserEncryptedOrgKeysState.update((_) => {
       const encOrgKeyData: { [orgId: string]: EncryptedOrganizationKeyData } = {};
 
@@ -411,6 +421,8 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async setProviderKeys(providers: ProfileProviderResponse[]): Promise<void> {
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.activeUserEncryptedProviderKeysState.update((_) => {
       const encProviderKeys: { [providerId: ProviderId]: EncryptedString } = {};
 
@@ -613,6 +625,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     await this.clearProviderKeys(false, userId);
     await this.clearKeyPair(false, userId);
     await this.clearPinKeys(userId);
+    await this.activeUserEverHadUserKey.update(() => null);
   }
 
   async rsaEncrypt(data: Uint8Array, publicKey?: Uint8Array): Promise<EncString> {
